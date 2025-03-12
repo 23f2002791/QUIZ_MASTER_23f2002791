@@ -3,7 +3,7 @@ from controllers.database import db
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_email = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(50), nullable=False)
+    user_password = db.Column(db.String(50), nullable=False)
     full_name = db.Column(db.String(50), nullable=False)
     qualification = db.Column(db.String(50))
     dob = db.Column(db.Date)

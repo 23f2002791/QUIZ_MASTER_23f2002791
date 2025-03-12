@@ -15,20 +15,15 @@ with app.app_context():
     if not admin_user:
         admin = User(
             user_email = 'QuizMaster Admin',
-            password = 'admin@1234',
+            user_password = 'admin@1234',
             full_name = 'QuizMaster Admin',
             is_admin = True
         )
         db.session.add(admin)
     db.session.commit()
 
-@app.route('/')
-def index():
-    return render_template('hello.html')
 
-@app.route('/about')
-def about():
-    return 'About page'
+from controllers.auth_routes import *
 
 if __name__ == '__main__':
     app.run()
