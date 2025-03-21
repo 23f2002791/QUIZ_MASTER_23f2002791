@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %} Quiz Master - Admin Dashboard {% endblock %}
+
+{% block content %}
+
+    {% if session.get('is_admin') %}
+
+        <div class="container-fluid vh-100 d-flex flex-column align-items-center justify-content-start p-4">
+            <div class="w-100 d-flex flex-column align-items-center gap-4">
+
+                <h1 class="text-center">ADMIN DASHBOARD</h1>
+        
+                {% if not subjects %}
+                    <div class="text-center">
+                        <h2 class="text-muted">No Subjects Available</h2>
+                    </div>
+                {% endif %}
+        
+                {% for sub in subjects %}
+                    <div class="card shadow border-dark-subtle rounded-4 w-50">
+                        <div class="card-body">
+                            <h4 class="card-title fw-bold">{{ sub.sub_name | upper }}</h4>
+                            <p class="card-text text-secondary">{{ sub.sub_desc }}</p>
+                            <a href=" {{ url_for('view_subject', subject_id=sub.sub_id) }} " class="btn btn-secondary"> View Subject </a>
+                            <a href=" {{ url_for('edit_subject', subject_id=sub.sub_id) }} " class="btn btn-success"> Edit Subject </a>
+                            <a href=" {{ url_for('delete_subject', subject_id=sub.sub_id) }} " class="btn btn-danger"> Delete Subject </a>
+                            <!-- <button type="button" > View Subject </button>
+                            <button type="button" class="btn btn-success"> Edit Subject </button>
+                            <button type="button" class="btn btn-danger"> Delete Subject </button> -->
+                        </div>
+                    </div>
+                {% endfor %}
+        
+                <!-- Add New Subject Card -->
+                <div class="card shadow border-dark-subtle rounded-4 w-50 bg-light">
+                    <div class="card-header bg-primary text-white text-center fw-bold">
+                        Add New Subject
+                    </div>
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <p class="text-muted">Create a new subject for quizzes.</p>
+                        <a href="{{ url_for('add_subject') }}" class="btn btn-success">Create Subject</a>
+                    </div>
+                </div>
+        
+            </div>
+        </div>        
+
+    {% else %}
+        <h1>Not an Admin</h1>
+    {% endif %}
+
+{% endblock %}

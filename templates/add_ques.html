@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %} Quiz Master - Add Questions {% endblock %}
+
+{% block content %}
+
+    <div class="d-flex vh-100 container-fluid row justify-content-center align-items-center mb-5 ">
+
+        <form class="col-4" style="border: 2px solid #747474; padding: 20px; border-radius: 5px;" action="{{ url_for('add_ques',q_id=q_id) }}" method="POST">
+            
+            <h1 class="text-center">Add Question</h1>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Question</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="What is the capital of India?" name="ques">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput2" class="form-label">Option 1</label>
+                <input type="text" class="form-control" id="exampleFormControlInput2" placeholder="New Delhi" name="opt1">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput3" class="form-label">Option 2</label>
+                <input type="text" class="form-control" id="exampleFormControlInput3" placeholder="Mumbai" name="opt2">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput4" class="form-label">Option 3</label>
+                <input type="text" class="form-control" id="exampleFormControlInput4" placeholder="Kolkata" name="opt3">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput5" class="form-label">Option 4</label>
+                <input type="text" class="form-control" id="exampleFormControlInput5" placeholder="Chennai" name="opt4">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput6" class="form-label">Correct Option</label>
+                <input type="text" class="form-control" id="exampleFormControlInput6" placeholder="Delhi" name="ans">
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-outline-success">Create Question</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

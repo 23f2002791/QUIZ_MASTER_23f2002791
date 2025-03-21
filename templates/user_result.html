@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %} Quiz Master - User Score {% endblock %}
+
+{% block content %}
+    <br><br>
+    <div class="container-fluid vh-100 d-flex flex-column align-items-center justify-content-center p-4">
+        <div class="card shadow-lg border-0 rounded-4 p-4 text-center" style="max-width: 400px;">
+            <h1 class="fw-bold mb-3">Your Score</h1>
+
+            {% set percentage = (score.score_total / quiz.num_ques) * 100 %}
+            
+            <h2 class="fw-bold 
+                {% if percentage >= 80 %} text-success 
+                {% elif percentage >= 50 %} text-warning 
+                {% else %} text-danger {% endif %}">
+                {{ score.score_total }} / {{ quiz.num_ques }}
+            </h2>
+
+            <h3 class="text-muted">Percentage: <span class="fw-bold">{{ percentage | round(2) }}%</span></h3>
+
+            <hr><br>
+
+            <h3>QUIZ OVERVIEW</h3>
+            <h4>Chapter name: {{ quiz.chapter.chap_name }}</h4>
+            <h4>Quiz name: {{ quiz.chapter.subject.sub_name }}</h4>
+            <h5>Total number of questions: {{ quiz.num_ques }}</h5>
+            <h5 class="fw text-success">Correct answers: {{ score.score_total }}</h5>
+            <h5 class="fw text-danger">Wrong answers: {{ quiz.num_ques - score.score_total }}</h5>
+
+            <br><hr><br>
+
+            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">Back to Home</a>
+        </div>
+    </div>
+    <br><br>
+
+{% endblock %}

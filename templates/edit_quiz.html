@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} Quiz Master - Edit Quiz {% endblock %}
+
+{% block content %}
+
+    <div class="d-flex vh-100 container-fluid row justify-content-center align-items-center mb-5 ">
+
+        <form class="col-4" style="border: 2px solid #747474; padding: 20px; border-radius: 5px;" action="{{ url_for('edit_quiz',quiz_id=quiz_id) }}" method="POST">
+            
+            <h1 class="text-center">Edit Quiz</h1>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Quiz Name</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" value="{{ quiz.quiz_name }}" name="name">
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-outline-success">Save changes</button>
+            </div>
+
+        </form>
+    </div>
+
+{% endblock %}

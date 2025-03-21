@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %} Quiz Master {% endblock %}
+
+{% block content %}
+
+    {% if session.get('is_admin')==false %}
+
+        <div class="container-fluid vh-100 d-flex flex-column align-items-center justify-content-start p-4">
+            <div class="w-100 d-flex flex-column align-items-center gap-4">
+
+                <h1 class="text-center">USER DASHBOARD</h1>
+
+                {% if not quizzes %}
+                    <div class="text-center">
+                        <h2 class="text-muted">No Quizzes Available</h2>
+                    </div>
+                {% endif %}
+
+                {% for quiz in quizzes %}
+                    <div class="card shadow border-dark-subtle rounded-4 w-50">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">{{ quiz.quiz_name | upper }}</h5>
+                            <p class="card-text text-secondary">Subject: {{ quiz.chapter.subject.sub_name }}</p>
+                            <p class="card-text text-secondary">Chapter: {{ quiz.chapter.chap_name }}</p>
+                            <p class="card-text text-secondary">Number of Questions: {{ quiz.num_ques }}</p>
+                            <a href=" {{ url_for('submit_quiz', quiz_id=quiz.quiz_id) }} " class="btn btn-secondary"> Attempt Quiz </a>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>        
+
+    {% else %}
+        <h1>Not an User</h1>
+    {% endif %}
+
+{% endblock %}

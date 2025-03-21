@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %} Quiz Master - Edit Subject {% endblock %}
+
+{% block content %}
+
+    <div class="d-flex vh-100 container-fluid row justify-content-center align-items-center mb-5 ">
+
+        <form class="col-4" style="border: 2px solid #747474; padding: 20px; border-radius: 5px;" action=" {{ url_for('edit_subject', subject_id=subject_id) }} " method="POST">
+            
+            <h1 class="text-center">Edit Subject</h1>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Subject Name</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" value="{{ subject.sub_name }}" name="name">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Subject Description</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description">{{ subject.sub_desc }}</textarea>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-outline-success">Save changes</button>
+            </div>
+
+        </form>
+    </div>
+
+{% endblock %}

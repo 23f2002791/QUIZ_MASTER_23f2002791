@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %} Quiz Master - View Quizzes {% endblock %}
+
+{% block content %}
+
+    {% if session.get('is_admin') %}
+
+        <div class="container-fluid vh-100 d-flex flex-column align-items-center justify-content-start p-4">
+            <div class="w-100 d-flex flex-column align-items-center gap-4">
+
+                <h1 class="text-center">{{ quiz.quiz_name | upper }}</h1>
+                {% if not questions %}
+                    <div class="text-center">
+                        <h2 class="text-muted">No questions added yet.</h2>
+                    </div>
+                {% endif %}
+
+                {% for question in questions %}
+                    <div class="card shadow border-dark-subtle rounded-4 w-50">
+                        <div class="card-body">
+                            <h4 class="card-title fw-bold">Question: {{ question.ques }}</h4>
+                            <p class="card-text text-secondary">Option 1: {{ question.option1 }}</p>
+                            <p class="card-text text-secondary">Option 2: {{ question.option2 }}</p>
+                            <p class="card-text text-secondary">Option 3: {{ question.option3 }}</p>
+                            <p class="card-text text-secondary">Option 4: {{ question.option4 }}</p>
+                            <h4 class="card-text text-secondary">Answer: {{ question.ans }}</h4>
+                            <a href="{{ url_for('edit_ques',ques_id=question.ques_id) }}" class="btn btn-success"> Edit Question </a>
+                            <a href="" class="btn btn-danger"> Delete Question </a>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <!-- Add New Subject Card -->
+                <div class="card shadow border-dark-subtle rounded-4 w-50 bg-light">
+                    <div class="card-header bg-primary text-white text-center fw-bold">
+                        Add Question
+                    </div>
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <p class="text-muted">Add more questions to the quiz.</p>
+                        <a href="{{ url_for('add_ques', q_id = quiz.quiz_id) }}" class="btn btn-success">Add question</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>        
+
+    {% else %}
+        <h1>Not an Admin</h1>
+    {% endif %}
+
+{% endblock %}

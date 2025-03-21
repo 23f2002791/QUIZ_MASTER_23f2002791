@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} Quiz Master - Add Quiz {% endblock %}
+
+{% block content %}
+
+    <div class="d-flex vh-100 container-fluid row justify-content-center align-items-center mb-5 ">
+
+        <form class="col-4" style="border: 2px solid #747474; padding: 20px; border-radius: 5px;" action="{{ url_for('add_quiz',chapter_id=chapter_id) }}" method="POST">
+            
+            <h1 class="text-center">Add Quiz</h1>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Quiz Name</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="test 1" name="name">
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-outline-success">Create Quiz</button>
+            </div>
+
+        </form>
+    </div>
+
+{% endblock %}
