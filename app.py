@@ -22,7 +22,6 @@ with app.app_context():
         db.session.add(admin)
     db.session.commit()
 
-
 from controllers.auth_routes import *
 from controllers.routes import *
 

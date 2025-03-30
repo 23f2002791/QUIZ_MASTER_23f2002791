@@ -76,7 +76,7 @@ def register():
 
         if dateofbirth:
             try:
-                dateofbirth = datetime.strptime(dateofbirth, '%Y-%m-%d').date()  # Format based on your input
+                dateofbirth = datetime.strptime(dateofbirth, '%Y-%m-%d').date()
             except ValueError:
                 return "Invalid date format. Please use YYYY-MM-DD.", 400
         else:
