@@ -3,6 +3,7 @@
 {% block title %} Admin Summary {% endblock %}
 
 {% block content %}
+
 <div class="container-fluid vh-100 d-flex flex-column align-items-center justify-content-start p-4">
     <h2>Admin Summary</h2>
     <hr style="border: 2px solid black; width: 60%;">
@@ -17,4 +18,5 @@
     <h3>User Attempts per Subject</h3>
     <img src="data:image/png;base64,{{ user_attempts_plot }}" alt="User Attempts Plot">
 </div>
+
 {% endblock %}
