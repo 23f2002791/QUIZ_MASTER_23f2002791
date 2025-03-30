@@ -518,12 +518,6 @@ def admin_summary():
     
     return render_template('admin_summary.html', admin_performance_plot=admin_performance_plot, user_attempts_plot=user_attempts_plot)
 
-# def generate_plot(fig):
-#     img = io.BytesIO()
-#     fig.savefig(img, format='png')
-#     img.seek(0)
-#     plot_url = base64.b64encode(img.getvalue()).decode()
-#     return plot_url
 
 @app.route('/user_summary', methods=['GET'])
 def user_summary():

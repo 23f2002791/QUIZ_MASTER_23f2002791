@@ -3,9 +3,16 @@
 {% block title %} User Summary {% endblock %}
 
 {% block content %}
-<h2>User Performance Summary</h2>
 
-<h3>Your Quiz Scores</h3>
-<img src="data:image/png;base64,{{ performance_plot }}" alt="User Performance Plot">
+<div class="container-fluid vh-100 d-flex flex-column align-items-center justify-content-start p-4">
+    <h2>User Performance Summary</h2>
+    <hr style="border: 2px solid black; width: 60%;">
+
+    <h3>Your Quiz Scores</h3>
+    <img src="data:image/png;base64,{{ performance_plot }}" alt="User Performance Plot">
+
+    <br><br>
+
+</div>
 
 {% endblock %}
