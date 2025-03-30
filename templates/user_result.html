@@ -18,7 +18,6 @@
             </h2>
 
             <h3 class="text-muted">Percentage: <span class="fw-bold">{{ percentage | round(2) }}%</span></h3>
-
             <hr>
 
             <h3>QUIZ OVERVIEW</h3> <br>
@@ -29,7 +28,6 @@
             <h5>Total number of questions: {{ quiz.num_ques }}</h5>
             <h5 class="fw text-success">Correct answers: {{ score.score_total }}</h5>
             <h5 class="fw text-danger">Wrong answers: {{ quiz.num_ques - score.score_total }}</h5>
-
             <hr>
 
             <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">Back to Home</a>
