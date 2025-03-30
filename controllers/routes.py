@@ -1,7 +1,11 @@
-from main import app
-from flask import render_template, request, session, flash, redirect, url_for
+from app import app
+from flask import render_template, request, session, flash, redirect, url_for, jsonify
 from controllers.models import *
 from datetime import datetime
+import matplotlib.pyplot as plt
+import io
+import base64
+
 
 @app.route('/')
 def home():
@@ -9,7 +13,9 @@ def home():
         subjects = Subject.query.all()
         return render_template('admin_dashboard.html', subjects=subjects)
     elif(session.get('user_email')):
-        quizzes = Quiz.query.all()
+        scores = Scores.query.filter_by(user_id=session.get('user_id')).all()
+        attempted_quiz_ids = {score.quiz_id for score in scores}
+        quizzes = Quiz.query.filter(~Quiz.quiz_id.in_(attempted_quiz_ids)).all()
         return render_template('user_dashboard.html', quizzes=quizzes)
     else:
         flash('You are not logged in!',"danger")
@@ -365,7 +371,7 @@ def submit_quiz(quiz_id):
             if not quiz:
                 flash('Quiz not found!', 'danger')
                 return redirect(url_for('home'))
-
+            
             return render_template('submit_quiz.html', questions=questions, quiz=quiz)
         
         if request.method == 'POST':
@@ -401,3 +407,138 @@ def user_result(quiz_id):
     else:
         flash('You are not authorized to access this page!', "danger")
         return redirect(url_for('home'))
+    
+@app.route('/past_quizzes', methods=['GET'])
+def past_quizzes():
+    if session.get('user_email'):
+        scores = Scores.query.filter_by(user_id=session.get('user_id')).all()
+        return render_template('past_quizzes.html', scores=scores)
+    else:
+        flash('You are not authorized to access this page!', "danger")
+        return redirect(url_for('home'))
+    
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('query', '').strip()
+
+    if not query:
+        return render_template('search_results.html', query=query, users=[], subjects=[], quizzes=[])
+
+    if session.get('is_admin'):
+        #Admin search
+        users = User.query.filter(User.user_email.ilike(f'%{query}%')).all()
+        subjects = Subject.query.filter(Subject.sub_name.ilike(f'%{query}%')).all()
+        quizzes = Quiz.query.filter(Quiz.quiz_name.ilike(f'%{query}%')).all()
+
+        return render_template('search_results.html', query=query, users=users, subjects=subjects, quizzes=quizzes)
+
+    elif session.get('user_email'):
+        #User search
+        quizzes = Quiz.query.filter(Quiz.quiz_name.ilike(f'%{query}%')).all()
+        scores = Scores.query.filter_by(user_id=session.get('user_id')).all()
+        attempted_quiz_ids = {score.quiz_id for score in scores}
+
+        return render_template('search_results.html', query=query, quizzes=quizzes, users=[], subjects=[], attempted_quiz_ids=attempted_quiz_ids)
+
+    else:
+        flash("You must be logged in to search.", "danger")
+        return redirect(url_for('login'))
+    
+@app.route('/manage_users', methods=['GET'])
+def manage_users():
+    if session.get('is_admin'):
+        users = User.query.filter(User.user_id!=1).all()
+        return render_template('manage_users.html', users=users)
+    else:
+        flash('You are not authorized to access this page!', "danger")
+        return redirect(url_for('home'))
+    
+@app.route('/delete_user/<int:user_id>', methods=['GET'])
+def delete_user(user_id):
+    if session.get('is_admin'):
+        user = User.query.filter_by(user_id=user_id).first()
+        if not user:
+            flash('User not found!', 'danger')
+            return redirect(url_for('home'))
+        
+        db.session.delete(user)
+        db.session.commit()
+        flash('User deleted successfully!', 'success')
+        return redirect(url_for('manage_users'))
+    
+    else:
+        flash('You are not authorized to access this page!', "danger")
+        return redirect(url_for('home'))
+
+def generate_plot(fig):
+    img = io.BytesIO()
+    fig.savefig(img, format='png')
+    img.seek(0)
+    plot_url = base64.b64encode(img.getvalue()).decode()
+    return plot_url
+
+@app.route('/admin_summary', methods=['GET'])
+def admin_summary():
+    subjects = Subject.query.all()
+    subject_names = []
+    avg_percentages = []
+    user_attempts = []
+    
+    for subject in subjects:
+        quizzes = Quiz.query.filter_by(chap_id=subject.sub_id).all()
+        total_percentage = 0
+        total_attempts = 0
+        
+        for quiz in quizzes:
+            scores = Scores.query.filter_by(quiz_id=quiz.quiz_id).all()
+            for score in scores:
+                if quiz.num_ques > 0:
+                    total_percentage += (score.score_total / quiz.num_ques) * 100
+                    total_attempts += 1
+        
+        if total_attempts > 0:
+            avg_percentages.append(total_percentage / total_attempts)
+        else:
+            avg_percentages.append(0)
+        subject_names.append(subject.sub_name)
+        user_attempts.append(total_attempts)
+    
+    fig, ax = plt.subplots()
+    ax.bar(subject_names, avg_percentages, color='blue')
+    ax.set_title('Average Quiz Performance by Subject')
+    ax.set_ylabel('Average Percentage')
+    ax.set_ylim(0, 100)
+    admin_performance_plot = generate_plot(fig)
+    
+    fig2, ax2 = plt.subplots()
+    ax2.bar(subject_names, user_attempts, color='green')
+    ax2.set_title('User Attempts per Subject')
+    ax2.set_ylabel('Number of Attempts')
+    user_attempts_plot = generate_plot(fig2)
+    
+    return render_template('admin_summary.html', admin_performance_plot=admin_performance_plot, user_attempts_plot=user_attempts_plot)
+
+# def generate_plot(fig):
+#     img = io.BytesIO()
+#     fig.savefig(img, format='png')
+#     img.seek(0)
+#     plot_url = base64.b64encode(img.getvalue()).decode()
+#     return plot_url
+
+@app.route('/user_summary', methods=['GET'])
+def user_summary():
+    user_id = session.get('user_id')
+    scores = Scores.query.filter_by(user_id=user_id).all()
+    quizzes = {score.quiz_id: Quiz.query.get(score.quiz_id) for score in scores}
+    
+    quiz_names = [quiz.quiz_name for quiz in quizzes.values()]
+    percentages = [(score.score_total / quiz.num_ques) * 100 if quiz.num_ques > 0 else 0 for score, quiz in zip(scores, quizzes.values())]
+    
+    fig, ax = plt.subplots()
+    ax.bar(quiz_names, percentages, color='purple')
+    ax.set_title('User Performance in Quizzes')
+    ax.set_ylabel('Percentage Score')
+    ax.set_ylim(0, 100)
+    performance_plot = generate_plot(fig)
+    
+    return render_template('user_summary.html', performance_plot=performance_plot)

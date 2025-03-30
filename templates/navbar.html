@@ -43,11 +43,23 @@
                 <a class="nav-link" href="{{ url_for('add_subject') }}">Add subject</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('manage_users') }}"> Manage users </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin_summary') }}"> Summary </a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
               </li>
             {% else %}
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('past_quizzes') }}"> Quiz history </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('user_summary') }}"> Summary </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
@@ -56,10 +68,10 @@
           {% endif %}
         </ul>
 
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <form class="d-flex" role="search" action="{{ url_for('search') }}" method="GET">
+          <input class="form-control me-2" type="search" name="query" placeholder="Search..." aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+      </form>      
       </div>
     </div>
   </nav>

@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %} Search Results {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Search Results for "{{ query }}"</h2>
+
+    {% if users or subjects or quizzes %}
+        {% if session.get('is_admin') %}
+
+            <!-- Admin Search Results -->
+            <h3 class="mt-4">Users</h3>
+            {% if users %}
+                <ul class="list-group">
+                    {% for user in users %}
+                        <div class="card shadow border-dark-subtle rounded-4 w-50">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">Name: {{ user.full_name | upper }}</h5>
+                                <p class="card-text text-secondary">Qualification: {{ user.qualification }}</p>
+                                <p class="card-text text-secondary">Date of Birth: {{ user.dob }}</p>
+                                <a href=" {{ url_for('delete_user', user_id=user.user_id) }} " class="btn btn-danger"> Delete User </a>
+                            </div>
+                        </div>
+                        <br>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No users found.</p>
+            {% endif %}
+
+            <h3 class="mt-4">Subjects</h3>
+            {% if subjects %}
+                <ul class="list-group">
+                    {% for subject in subjects %}
+                        <div class="card shadow border-dark-subtle rounded-4 w-50">
+                            <div class="card-body">
+                                <h4 class="card-title fw-bold">{{ subject.sub_name | upper }}</h4>
+                                <p class="card-text text-secondary">{{ subject.sub_desc }}</p>
+                                <a href=" {{ url_for('view_subject', subject_id=subject.sub_id) }} " class="btn btn-secondary"> View Subject </a>
+                                <a href=" {{ url_for('edit_subject', subject_id=subject.sub_id) }} " class="btn btn-success"> Edit Subject </a>
+                                <a href=" {{ url_for('delete_subject', subject_id=subject.sub_id) }} " class="btn btn-danger"> Delete Subject </a>
+                            </div>
+                        </div>
+                        <br>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No subjects found.</p>
+            {% endif %}
+
+            <h3 class="mt-4">Quizzes</h3>
+            {% if quizzes %}
+                <ul class="list-group">
+                    {% for quiz in quizzes %}
+                        <div class="card shadow border-dark-subtle rounded-4 w-50">
+                            <div class="card-body">
+                                <h4 class="card-title fw-bold">{{ quiz.quiz_name | upper }}</h4>
+                                <a href=" {{ url_for('view_quiz', q_id=quiz.quiz_id) }} " class="btn btn-secondary"> View Quiz </a>
+                                <a href=" {{ url_for('edit_quiz', quiz_id=quiz.quiz_id) }} " class="btn btn-success"> Edit Quiz </a>
+                                <a href="" class="btn btn-danger"> Delete Quiz </a>
+                            </div>
+                        </div>
+                        <br>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No quizzes found.</p>
+            {% endif %}
+        {% else %}
+
+            <!-- User Search Results -->
+            <h3 class="mt-4">Quizzes</h3>
+            {% if quizzes %}
+                <ul class="list-group">
+                    {% for quiz in quizzes %}
+                    <div class="card shadow border-dark-subtle rounded-4 w-50">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">{{ quiz.quiz_name | upper }}</h5>
+                            <p class="card-text text-secondary">Subject: {{ quiz.chapter.subject.sub_name }}</p>
+                            <p class="card-text text-secondary">Chapter: {{ quiz.chapter.chap_name }}</p>
+                            <p class="card-text text-secondary">Number of Questions: {{ quiz.num_ques }}</p>
+                            {% if quiz.quiz_id in attempted_quiz_ids %}
+                                <a href=" {{ url_for('user_result', quiz_id=quiz.quiz_id) }} " class="btn btn-secondary"> View Result </a>
+                            {% else %}
+                                <a href=" {{ url_for('submit_quiz', quiz_id=quiz.quiz_id) }} " class="btn btn-secondary"> Attempt Quiz </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No Quizzes Available</p>
+        {% endif %}
+        {% endif %}
+
+    {% else %}
+        <p class="text-muted">No results found.</p>
+    {% endif %}
+
+    <a href="{{ url_for('home') }}" class="btn btn-outline-secondary mt-3">Back</a>
+</div>
+<br><br>
+{% endblock %}
